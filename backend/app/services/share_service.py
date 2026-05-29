@@ -5,7 +5,6 @@ Generates Merkle proofs for selected fields and creates time-limited share links
 """
 
 import secrets
-import uuid
 from datetime import datetime, timedelta, timezone
 from typing import List
 
@@ -27,7 +26,7 @@ settings = get_settings()
 
 async def create_share(
     db: AsyncSession,
-    user_id: uuid.UUID,
+    user_id,
     data: ShareRequest,
 ) -> ShareResponse:
     """
@@ -48,7 +47,7 @@ async def create_share(
             status_code=status.HTTP_404_NOT_FOUND,
             detail="Credential not found",
         )
-    if credential.user_id != user_id:
+    if str(credential.user_id) != str(user_id):
         raise HTTPException(
             status_code=status.HTTP_403_FORBIDDEN,
             detail="You do not own this credential",
@@ -116,7 +115,7 @@ async def create_share(
 
 
 async def get_user_shares(
-    db: AsyncSession, user_id: uuid.UUID
+    db: AsyncSession, user_id
 ) -> ShareListResponse:
     """Fetch all shares created by the user."""
     credentials = await get_credentials_by_user_id(db, user_id)
@@ -149,7 +148,7 @@ async def get_user_shares(
 
 
 async def revoke_share(
-    db: AsyncSession, user_id: uuid.UUID, share_token: str
+    db: AsyncSession, user_id, share_token: str
 ) -> bool:
     """Revoke (delete) a share, verifying ownership."""
     credentials = await get_credentials_by_user_id(db, user_id)
