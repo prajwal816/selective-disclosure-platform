@@ -2,7 +2,6 @@
 CRUD operations for the Credential model.
 """
 
-import uuid
 from typing import List, Optional
 
 from sqlalchemy import select, func
@@ -13,7 +12,7 @@ from app.models.credential import Credential
 
 async def create_credential(
     db: AsyncSession,
-    user_id: uuid.UUID,
+    user_id,
     credential_type: str,
     claims: dict,
     salts: dict,
@@ -25,7 +24,7 @@ async def create_credential(
 ) -> Credential:
     """Create a new credential with cryptographic metadata."""
     credential = Credential(
-        user_id=user_id,
+        user_id=str(user_id),
         credential_type=credential_type,
         claims=claims,
         salts=salts,
@@ -42,32 +41,32 @@ async def create_credential(
 
 
 async def get_credential_by_id(
-    db: AsyncSession, credential_id: uuid.UUID
+    db: AsyncSession, credential_id
 ) -> Optional[Credential]:
-    """Fetch a credential by its UUID."""
+    """Fetch a credential by its ID."""
     result = await db.execute(
-        select(Credential).where(Credential.id == credential_id)
+        select(Credential).where(Credential.id == str(credential_id))
     )
     return result.scalar_one_or_none()
 
 
 async def get_credentials_by_user_id(
-    db: AsyncSession, user_id: uuid.UUID
+    db: AsyncSession, user_id
 ) -> List[Credential]:
     """Fetch all credentials belonging to a user, newest first."""
     result = await db.execute(
         select(Credential)
-        .where(Credential.user_id == user_id)
+        .where(Credential.user_id == str(user_id))
         .order_by(Credential.created_at.desc())
     )
     return list(result.scalars().all())
 
 
 async def get_credential_count_by_user(
-    db: AsyncSession, user_id: uuid.UUID
+    db: AsyncSession, user_id
 ) -> int:
     """Count credentials for a user."""
     result = await db.execute(
-        select(func.count()).select_from(Credential).where(Credential.user_id == user_id)
+        select(func.count()).select_from(Credential).where(Credential.user_id == str(user_id))
     )
     return result.scalar() or 0

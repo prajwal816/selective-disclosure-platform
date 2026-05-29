@@ -56,7 +56,7 @@ class TokenResponse(BaseModel):
 class UserResponse(BaseModel):
     """Public user data response."""
 
-    id: uuid.UUID
+    id: str
     email: str
     full_name: str
     created_at: datetime

@@ -2,7 +2,6 @@
 CRUD operations for the User model.
 """
 
-import uuid
 from typing import Optional
 
 from sqlalchemy import select
@@ -38,10 +37,8 @@ async def get_user_by_email(
 
 
 async def get_user_by_id(
-    db: AsyncSession, user_id: str | uuid.UUID
+    db: AsyncSession, user_id: str
 ) -> Optional[User]:
-    """Fetch a user by their UUID."""
-    if isinstance(user_id, str):
-        user_id = uuid.UUID(user_id)
-    result = await db.execute(select(User).where(User.id == user_id))
+    """Fetch a user by their ID."""
+    result = await db.execute(select(User).where(User.id == str(user_id)))
     return result.scalar_one_or_none()

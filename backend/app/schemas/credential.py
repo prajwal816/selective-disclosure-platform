@@ -52,7 +52,7 @@ class CredentialCreate(BaseModel):
 class CredentialResponse(BaseModel):
     """Single credential response."""
 
-    id: uuid.UUID
+    id: str
     credential_type: str
     claims: Dict[str, Any]
     merkle_root: str
