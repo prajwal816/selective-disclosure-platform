@@ -3,7 +3,7 @@ Credential service — handles credential issuance with Merkle tree construction
 and Ed25519 signing.
 """
 
-import uuid
+
 from datetime import datetime, timezone
 from typing import List
 
@@ -30,7 +30,7 @@ settings = get_settings()
 
 async def issue_credential(
     db: AsyncSession,
-    user_id: uuid.UUID,
+    user_id,
     data: CredentialCreate,
 ) -> CredentialResponse:
     """
@@ -83,7 +83,7 @@ async def issue_credential(
 
 
 async def get_user_credentials(
-    db: AsyncSession, user_id: uuid.UUID
+    db: AsyncSession, user_id
 ) -> List[CredentialResponse]:
     """Fetch all credentials belonging to a user."""
     credentials = await get_credentials_by_user_id(db, user_id)
@@ -91,7 +91,7 @@ async def get_user_credentials(
 
 
 async def get_credential_detail(
-    db: AsyncSession, credential_id: uuid.UUID, user_id: uuid.UUID
+    db: AsyncSession, credential_id, user_id
 ) -> Credential:
     """
     Fetch a single credential with ownership verification.
@@ -105,7 +105,7 @@ async def get_credential_detail(
             detail="Credential not found",
         )
 
-    if credential.user_id != user_id:
+    if str(credential.user_id) != str(user_id):
         raise HTTPException(
             status_code=status.HTTP_403_FORBIDDEN,
             detail="You do not own this credential",
