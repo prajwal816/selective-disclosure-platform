@@ -2,8 +2,7 @@
 Credential management API endpoints — issue and list credentials.
 """
 
-import uuid
-from typing import List
+
 
 from fastapi import APIRouter, Depends, Request
 from sqlalchemy.ext.asyncio import AsyncSession
@@ -62,7 +61,7 @@ async def list_credentials(
     description="Retrieve a specific credential by ID (must be owner).",
 )
 async def get_credential(
-    credential_id: uuid.UUID,
+    credential_id: str,
     db: AsyncSession = Depends(get_db),
     current_user: User = Depends(get_current_user),
 ):
