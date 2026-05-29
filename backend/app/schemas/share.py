@@ -12,7 +12,7 @@ from pydantic import BaseModel, Field, field_validator
 class ShareRequest(BaseModel):
     """Request to create a selective disclosure share."""
 
-    credential_id: uuid.UUID = Field(
+    credential_id: str = Field(
         ..., description="ID of the credential to share"
     )
     selected_fields: List[str] = Field(
@@ -54,9 +54,9 @@ class ShareResponse(BaseModel):
 class ShareListItem(BaseModel):
     """Summary of a shared presentation."""
 
-    id: uuid.UUID
+    id: str
     share_token: str
-    credential_id: uuid.UUID
+    credential_id: str
     credential_type: str
     disclosed_fields: List[str]
     expires_at: datetime
